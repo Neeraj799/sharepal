@@ -32,7 +32,7 @@ const CartNotice = ({ isToastVisible, onCloseToast, lastAdded, onGoToCart }) => 
         <button
           type="button"
           onClick={onGoToCart}
-          className={`fixed bottom-20 left-1/2 z-40 flex h-14 -translate-x-1/2 items-center gap-3 rounded-full bg-secondary-500 py-2 pl-2 pr-5 text-base font-semibold text-primary-900 shadow-lg transition-colors hover:bg-secondary-400 active:scale-[0.98]${FOCUS_RING}`}
+          className={`fixed bottom-20 left-1/2 z-40 flex h-14 -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-full bg-secondary-500 py-2 pl-2 pr-5 text-base font-semibold text-primary-900 shadow-lg transition-colors hover:bg-secondary-400 active:scale-[0.98] ${FOCUS_RING}`}
         >
           <img
             src={lastAdded.image}

@@ -16,10 +16,12 @@ const CategoryTabs = ({ active, onSelect }) => {
   // The open dropdown: { category, left, width }, or null when closed
   const [menu, setMenu] = useState(null)
 
-  // The reference opens with the row scrolled to its end (browsers clamp the value)
+  // The reference opens with the active tab at the start of the row (browsers clamp the value)
   useEffect(() => {
-    listRef.current.scrollLeft = listRef.current.scrollWidth
-  }, [])
+    const list = listRef.current
+    const activeTab = list.children[SUPER_CATEGORIES.indexOf(active)]
+    list.scrollLeft = activeTab.offsetLeft - list.offsetLeft
+  }, [active])
 
   // One 240px column per four items, centred under the tab and kept inside the viewport
   const openMenu = (category, tab) => {

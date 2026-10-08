@@ -81,7 +81,7 @@ const App = () => {
   }
 
   const deleteFromCart = (productId) =>
-    setCart(({ [productId]: removed, ...rest }) => rest)
+    setCart(({ [productId]: _removed, ...rest }) => rest)
 
   // Without dates the cart asks for them first.
   const openCart = () => (rentalDates ? setIsCartOpen(true) : openDateModal())

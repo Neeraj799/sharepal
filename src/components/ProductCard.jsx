@@ -190,7 +190,7 @@ const ProductCard = ({
                   // without dates there is no price to add, so ask for them first
                   onClick={rentalDays ? onAdd : onSelectDates}
                   aria-label={`Add ${name} to cart`}
-                  className={`relative z-10 flex h-8 shrink-0 items-center justify-center rounded-full border-2 border-primary-900 px-4 text-sm font-medium transition-all duration-300 hover:bg-neutral-150 active:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent max-md:w-full md:h-9 md:w-9 md:p-2 lg:h-12 lg:w-12 ${FOCUS_RING}`}
+                  className={`relative z-10 flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-full border-2 border-primary-900 px-4 text-sm font-medium transition-all duration-300 hover:bg-neutral-150 active:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent max-md:w-full md:h-9 md:w-9 md:p-2 lg:h-12 lg:w-12 ${FOCUS_RING}`}
                 >
                   <span className="md:hidden">Add to Cart</span>
                   <Plus aria-hidden="true" className="hidden h-6 w-6 md:block" />
