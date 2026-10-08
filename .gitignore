@@ -6,3 +6,6 @@ dist-ssr
 .playwright-mcp
 CLAUDE.md
 AGENTS.md
+prompts/
+desktop-full.png
+mobile-view.png
