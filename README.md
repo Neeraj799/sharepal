@@ -3,7 +3,7 @@
 A frontend-only recreation of SharePal's gaming rentals page:
 <https://sharepal.in/bangalore/gaming-gadgets-on-rent>
 
-- **Live demo:** _add the deployed URL here_
+- **Live demo:** <https://sharepal-h936.onrender.com/>
 - **Repository:** <https://github.com/Neeraj799/sharepal>
 
 ## Tech stack
@@ -87,7 +87,9 @@ Checked at 1440, 1280, 1024, 768, 480 and 375 pixels wide with no horizontal scr
 
 ## Deployment
 
-The build output is a static site. Because routing happens in the browser, the host must serve `index.html` for every path. Without that rule, opening a product URL or `/bangalore/gaming-gadgets-on-rent` directly returns a 404.
+The site is deployed on Render as a static site (build command `npm run build`, publish directory `dist`).
+
+Because routing happens in the browser, the host must serve `index.html` for every path. Without that rule, opening a product URL or `/bangalore/gaming-gadgets-on-rent` directly returns a 404. On Render this is a rewrite rule under **Redirects/Rewrites**: source `/*`, destination `/index.html`, action **Rewrite**.
 
 ## Project structure
 
@@ -107,4 +109,4 @@ src/
 
 ## Development notes
 
-`AGENTS.md` and `prompts/design-system.md` hold the project rules and the design tokens extracted from the original site. They were used to guide AI-assisted development and are kept in the repository for transparency.
+`prompts/design-system.md` holds the design tokens extracted from the original site. It was used to guide AI-assisted development and is kept in the repository for transparency.
