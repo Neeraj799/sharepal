@@ -1,6 +1,10 @@
 import { useState } from 'react'
-import { Home, LayoutGrid, Search, ShoppingCart } from 'lucide-react'
 import logo from '../assets/images/sharepal-logo.svg'
+import { MOBILE_TABS } from '../constants/navigation'
+import { formatDayMonth } from '../lib/dates'
+import CityModal from './CityModal'
+import ProfileDrawer from './ProfileDrawer'
+import SearchDrawer from './SearchDrawer'
 import {
   CartIcon,
   ChevronDownIcon,
@@ -12,73 +16,40 @@ import {
   UserIcon,
 } from './NavIcons'
 
-const CITIES = ['Bangalore', 'Mumbai', 'Delhi', 'Pune']
-
-const MOBILE_TABS = [
-  { key: 'home', label: 'Home', icon: Home },
-  { key: 'category', label: 'Category', icon: LayoutGrid },
-  { key: 'search', label: 'Search', icon: Search },
-  { key: 'cart', label: 'Cart', icon: ShoppingCart },
-]
-
 const FOCUS_RING =
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-500'
 
-function LocationPicker({ city, onChange, compact = false }) {
-  const [isOpen, setIsOpen] = useState(false)
-
+const LocationPicker = ({ city, onOpen, compact = false }) => {
   return (
-    <div className="relative">
-      <button
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        onClick={() => setIsOpen((open) => !open)}
-        className={`flex items-center gap-1 font-semibold ${FOCUS_RING} ${
-          compact
-            ? 'rounded-full border border-category-purple bg-category-purple px-2 py-0.5 text-xs text-white shadow-md'
-            : 'rounded-l-full bg-neutral-200 px-2.5 py-1.5 text-sm text-primary-900 transition-colors hover:bg-neutral-250'
-        }`}
-      >
-        <PinIcon className={compact ? 'h-6 w-4' : 'h-6 w-5'} />
-        <span className={`text-left leading-4 ${compact ? '' : 'min-w-16'}`}>
-          {city}
-        </span>
-        <ChevronDownIcon
-          className={`transition-transform duration-200 ${compact ? 'h-6 w-3' : 'h-4 w-4'} ${
-            isOpen ? 'rotate-180' : ''
-          }`}
-        />
-      </button>
-
-      {isOpen && (
-        <ul
-          role="listbox"
-          className={`absolute top-full z-20 mt-2 w-40 overflow-hidden rounded-xl bg-white py-1 shadow-lg ${
-            compact ? 'right-0' : 'left-0'
-          }`}
-        >
-          {CITIES.map((c) => (
-            <li key={c} role="option" aria-selected={c === city}>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(c)
-                  setIsOpen(false)
-                }}
-                className="block w-full px-4 py-2 text-left text-sm font-medium text-neutral-900 hover:bg-primary-100"
-              >
-                {c}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <button
+      type="button"
+      aria-haspopup="dialog"
+      onClick={onOpen}
+      className={`flex items-center gap-1 font-semibold ${FOCUS_RING} ${
+        compact
+          ? 'rounded-full border border-category-accent bg-category-accent px-2 py-0.5 text-xs text-white shadow-md'
+          : 'rounded-l-full bg-neutral-200 px-2.5 py-1.5 text-sm text-primary-900 transition-colors hover:bg-neutral-250'
+      }`}
+    >
+      <PinIcon className={compact ? 'h-6 w-4' : 'h-6 w-5'} />
+      <span className={`text-left leading-4 ${compact ? '' : 'min-w-16'}`}>
+        {city}
+      </span>
+      <ChevronDownIcon className={compact ? 'h-6 w-3' : 'h-4 w-4'} />
+    </button>
   )
 }
 
-function DesktopNav({ city, onCityChange }) {
+const DesktopNav = ({
+  city,
+  onCityOpen,
+  onSearchOpen,
+  onCartOpen,
+  cartCount,
+  onProfileOpen,
+  rentalDates,
+  onSelectDates,
+}) => {
   return (
     <div className="mx-auto hidden max-w-[1216px] items-end justify-between gap-1 px-4 lg:flex">
       <a
@@ -89,30 +60,36 @@ function DesktopNav({ city, onCityChange }) {
         <img src={logo} alt="SharePal" className="w-full" />
       </a>
 
-      <div className="flex items-center gap-2 rounded-full border-2 border-category-purple bg-white">
-        <LocationPicker city={city} onChange={onCityChange} />
+      <div className="flex items-center gap-2 rounded-full border-2 border-category-accent bg-white">
+        <LocationPicker city={city} onOpen={onCityOpen} />
 
         <button
           type="button"
           aria-label="Edit Dates"
+          onClick={onSelectDates}
           className={`flex items-center gap-4 text-sm font-semibold leading-[18px] text-neutral-700 ${FOCUS_RING}`}
         >
           <span className="flex items-center gap-2">
             <DeliveryDateIcon className="h-4 w-4" />
             Delivery Date
+            {rentalDates && `: ${formatDayMonth(rentalDates.delivery)}`}
           </span>
           <span className="flex items-center gap-2">
             <PickupDateIcon className="h-4 w-4" />
             Pickup Date
+            {rentalDates && `: ${formatDayMonth(rentalDates.pickup)}`}
           </span>
         </button>
 
         <button
           type="button"
+          onClick={onSelectDates}
           className={`flex h-9 items-center gap-1 rounded-full bg-primary-900 px-3 text-sm font-semibold text-white active:opacity-90 ${FOCUS_RING}`}
         >
           <SelectDateIcon className="h-4 w-4" />
-          <span className="pr-1 leading-5 tracking-wide">Select</span>
+          <span className="pr-1 leading-5 tracking-wide">
+            {rentalDates ? 'Edit' : 'Select'}
+          </span>
         </button>
       </div>
 
@@ -120,22 +97,30 @@ function DesktopNav({ city, onCityChange }) {
         <button
           type="button"
           aria-label="Search"
+          onClick={onSearchOpen}
           className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-neutral-150 hover:text-neutral-900 ${FOCUS_RING}`}
         >
           <SearchIcon className="h-7 w-7" />
         </button>
         <button
           type="button"
-          aria-label="Cart"
-          className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-neutral-150 hover:text-neutral-900 ${FOCUS_RING}`}
+          aria-label={cartCount ? `Cart, ${cartCount} items` : 'Cart'}
+          onClick={onCartOpen}
+          className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-neutral-150 hover:text-neutral-900 ${FOCUS_RING}`}
         >
           <CartIcon className="h-7 w-7" />
+          {cartCount > 0 && (
+            <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#ef4444] text-[8px] font-bold text-white">
+              {cartCount}
+            </span>
+          )}
         </button>
         <button
           type="button"
+          onClick={onProfileOpen}
           className={`group flex items-center gap-3 rounded-full text-base font-semibold leading-5 ${FOCUS_RING}`}
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-category-purple bg-white text-neutral-900 transition-colors duration-300 group-hover:bg-neutral-200">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-category-accent bg-white text-neutral-900 transition-colors duration-300 group-hover:bg-neutral-200">
             <UserIcon className="h-6 w-6" />
           </span>
           Hi, Login
@@ -145,7 +130,7 @@ function DesktopNav({ city, onCityChange }) {
   )
 }
 
-function MobileNav({ city, onCityChange }) {
+const MobileNav = ({ city, onCityOpen, onProfileOpen, rentalDates, onSelectDates }) => {
   return (
     <div className="flex flex-col gap-3 px-4 lg:hidden">
       <div className="flex items-start justify-between gap-1">
@@ -158,10 +143,11 @@ function MobileNav({ city, onCityChange }) {
         </a>
 
         <div className="flex h-10 items-center gap-1.5 pt-1.5 md:gap-4">
-          <LocationPicker city={city} onChange={onCityChange} compact />
+          <LocationPicker city={city} onOpen={onCityOpen} compact />
           <button
             type="button"
             aria-label="Account"
+            onClick={onProfileOpen}
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-neutral-200 bg-neutral-900 text-white ${FOCUS_RING}`}
           >
             <UserIcon className="h-5 w-5" />
@@ -169,24 +155,31 @@ function MobileNav({ city, onCityChange }) {
         </div>
       </div>
 
-      <div className="flex h-[34px] items-center justify-between gap-1 rounded-full border-2 border-category-purple bg-white">
-        <span className="flex items-center gap-2 pl-3 text-sm font-semibold leading-[18px] text-neutral-700">
-          <DeliveryDateIcon className="h-4 w-4 text-neutral-900" />
-          Select Rental Dates
-        </span>
+      <div className="flex h-[34px] items-center justify-between gap-1 rounded-full border-2 border-category-accent bg-white">
         <button
           type="button"
+          onClick={onSelectDates}
+          className={`flex h-full flex-1 items-center gap-2 rounded-l-full pl-3 text-sm font-semibold leading-[18px] text-neutral-700 ${FOCUS_RING}`}
+        >
+          <DeliveryDateIcon className="h-4 w-4 text-neutral-900" />
+          {rentalDates
+            ? `${formatDayMonth(rentalDates.delivery)} - ${formatDayMonth(rentalDates.pickup)}`
+            : 'Select Rental Dates'}
+        </button>
+        <button
+          type="button"
+          onClick={onSelectDates}
           className={`flex h-full items-center gap-1 rounded-full bg-primary-900 pl-2 pr-3 text-xs font-medium text-white active:opacity-90 ${FOCUS_RING}`}
         >
           <SelectDateIcon className="h-4 w-4" />
-          Select
+          {rentalDates ? 'Edit' : 'Select'}
         </button>
       </div>
     </div>
   )
 }
 
-function MobileTabBar() {
+const MobileTabBar = ({ onSearchOpen, onCartOpen }) => {
   const [activeTab, setActiveTab] = useState('home')
 
   return (
@@ -197,7 +190,11 @@ function MobileTabBar() {
           <button
             key={key}
             type="button"
-            onClick={() => setActiveTab(key)}
+            onClick={() => {
+              if (key === 'search') onSearchOpen()
+              else if (key === 'cart') onCartOpen()
+              else setActiveTab(key)
+            }}
             className={`flex flex-col items-center gap-1 px-3 py-1 text-xs font-medium transition-colors ${FOCUS_RING} ${
               isActive ? 'text-primary-500' : 'text-neutral-500'
             }`}
@@ -212,17 +209,64 @@ function MobileTabBar() {
   )
 }
 
-function Navbar() {
+const Navbar = ({
+  isHidden = false,
+  rentalDates,
+  onSelectDates,
+  cartCount = 0,
+  onCartOpen: openCart,
+}) => {
   const [city, setCity] = useState('Bangalore')
+  const [isCityModalOpen, setIsCityModalOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const openProfile = () => setIsProfileOpen(true)
+  const openCityModal = () => setIsCityModalOpen(true)
+  const openSearch = () => setIsSearchOpen(true)
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-header pb-3 md:pb-4">
-        <DesktopNav city={city} onCityChange={setCity} />
-        <MobileNav city={city} onCityChange={setCity} />
+      <header
+        className={`sticky top-0 z-50 bg-header pb-3 transition-all duration-500 focus-within:translate-y-0 focus-within:opacity-100 md:pb-4 ${
+          isHidden ? '-translate-y-full opacity-0' : 'opacity-100'
+        }`}
+      >
+        <DesktopNav
+          city={city}
+          onCityOpen={openCityModal}
+          onSearchOpen={openSearch}
+          onCartOpen={openCart}
+          cartCount={cartCount}
+          onProfileOpen={openProfile}
+          rentalDates={rentalDates}
+          onSelectDates={onSelectDates}
+        />
+        <MobileNav
+          city={city}
+          onCityOpen={openCityModal}
+          onProfileOpen={openProfile}
+          rentalDates={rentalDates}
+          onSelectDates={onSelectDates}
+        />
       </header>
 
-      <MobileTabBar />
+      {isCityModalOpen && (
+        <CityModal
+          city={city}
+          onClose={() => setIsCityModalOpen(false)}
+          onSelect={(name) => {
+            setCity(name)
+            setIsCityModalOpen(false)
+          }}
+        />
+      )}
+
+      <MobileTabBar onSearchOpen={openSearch} onCartOpen={openCart} />
+
+      {isSearchOpen && <SearchDrawer onClose={() => setIsSearchOpen(false)} />}
+      {isProfileOpen && (
+        <ProfileDrawer onClose={() => setIsProfileOpen(false)} />
+      )}
     </>
   )
 }

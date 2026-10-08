@@ -4,7 +4,13 @@
   --color-primary-900: #030d31;
   --color-primary-500: #1945e8;
   --color-primary-100: #e8ecfd;
+  --color-secondary-100: #f5ffe5;
+  --color-secondary-200: #e2ffb3;
+  --color-secondary-400: #b1ff33;
   --color-secondary-500: #9eff00;
+  --color-secondary-850: #2f4d00;
+  --color-success-300: #6cd898;
+  --color-success-700: #0a7234;
   --color-secondary-900: #243a01;
   --color-neutral-900: #090a0b;
   --color-neutral-700: #383a44;
@@ -14,25 +20,276 @@
   --color-neutral-200: #e2e7ea;
   --color-neutral-150: #f4f6f7;
   --color-neutral-100: #fbfbfb;
-  --color-category-purple: #8a2be2;
+  --color-primary-850: #081546;
+  --color-primary-800: #0a1c5d;
+  --color-primary-700: #0f298b;
+  --color-primary-600: #1437ba;
+  --color-primary-400: #476aed;
+  --color-primary-300: #758ff1;
+  --color-primary-250: #a3b5f6;
+  --color-primary-150: #d1dafa;
+  --color-gray-150: #f2f2f2;
+  --color-gray-400: #979797;
+  --color-gray-600: #7a7a7a;
+  --color-gray-700: #6b6b6b;
+  --color-gray-800: #595959;
+  --color-muted-foreground: #64748b;
+  --color-category-accent: #8a2be2;
   --color-decorative-blue: #0079bc;
   --color-decorative-orange: #e86419;
+  --color-decorative-pink: #e819ae;
+  --color-category-purple: #8a2be2;
+  --color-carepal-lighter: #ffd9e6;
+  --color-carepal-dark: #ff7bac;
   --color-background: #f3f5f6;
+  --color-foreground: #020817;
   --color-header: #4c187c;
 
   --font-sans: "Inter", sans-serif;
   --font-display: "Ubuntu", sans-serif;
+
+  --animate-marquee: marquee 60s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Chat icon: one 3s loop in which the green and blue bubbles swap front and back.
+     0-44% green in front · 44-56% blue pops in front, green rises behind
+     56-89% blue in front · 89-100% green pops in front, blue rises behind */
+  --animate-chat-green-back: chat-green-back 3s ease-in-out infinite;
+  --animate-chat-blue-back: chat-blue-back 3s ease-in-out infinite;
+  --animate-chat-green-front: chat-green-front 3s ease-in-out infinite;
+  --animate-chat-blue-front: chat-blue-front 3s ease-in-out infinite;
+  --animate-chat-dot: chat-dot 3s ease-in-out infinite;
+
+  /* sits behind the blue bubble, then drifts up and fades as the new green pops in */
+  @keyframes chat-green-back {
+    0%,
+    55.55% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    55.56%,
+    88.89% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+  }
+
+  /* rises from the front slot to the back slot, waits there, then hides */
+  @keyframes chat-blue-back {
+    0%,
+    44.44% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    44.45% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    /* moves back to the front slot while hidden, so the reveal never shows a jump */
+    88.88% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    88.89% {
+      opacity: 1;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* pops in from its tail (bottom-left), waits in front, then rises to the back slot */
+  @keyframes chat-green-front {
+    0%,
+    44.44% {
+      opacity: 1;
+      transform: translateY(0) translate(-107px, 103px) scale(1) translate(107px, -103px);
+    }
+    55.56% {
+      opacity: 1;
+      transform: translateY(-50px) translate(-107px, 103px) scale(1) translate(107px, -103px);
+    }
+    /* hides in place first, then resets while hidden, so the hand-over never shows a jump */
+    55.57% {
+      opacity: 0;
+      transform: translateY(-50px) translate(-107px, 103px) scale(1) translate(107px, -103px);
+    }
+    88.88% {
+      opacity: 0;
+      transform: translateY(0) translate(-107px, 103px) scale(0) translate(107px, -103px);
+    }
+    88.89% {
+      opacity: 1;
+      transform: translateY(0) translate(-107px, 103px) scale(0) translate(107px, -103px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) translate(-107px, 103px) scale(1) translate(107px, -103px);
+    }
+  }
+
+  /* pops in from its tail (bottom-right) and stays in front until the green returns */
+  @keyframes chat-blue-front {
+    0%,
+    44.43% {
+      opacity: 0;
+      transform: translate(107px, 103px) scale(0) translate(-107px, -103px);
+    }
+    44.44% {
+      opacity: 1;
+      transform: translate(107px, 103px) scale(0) translate(-107px, -103px);
+    }
+    55.56%,
+    88.88% {
+      opacity: 1;
+      transform: translate(107px, 103px) scale(1) translate(-107px, -103px);
+    }
+    88.89%,
+    100% {
+      opacity: 0;
+      transform: translate(107px, 103px) scale(1) translate(-107px, -103px);
+    }
+  }
+
+  /* two "typing" hops, then rest for the remainder of the loop */
+  @keyframes chat-dot {
+    0%,
+    22.22%,
+    44.44%,
+    100% {
+      transform: translateY(0);
+    }
+    11.11%,
+    33.33% {
+      transform: translateY(-20px);
+    }
+  }
+
+  /* Overlay timings are the reference's (shadcn Sheet and Dialog) */
+  --animate-drawer-in: drawer-in 500ms ease-in-out;
+
+  @keyframes drawer-in {
+    from {
+      transform: translateX(100%);
+    }
+  }
+
+  --animate-modal-in: modal-in 200ms ease;
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(2%) scale(0.95);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  --animate-menu-in: menu-in 200ms ease-out;
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+}
+
+@utility bg-review-gradient {
+  background-image: linear-gradient(
+    92deg,
+    #002cd1 27.44%,
+    var(--color-primary-500) 48.86%,
+    #7ec904 70.28%
+  );
 }
 
 @utility bg-hero {
   background-image: linear-gradient(
     360deg,
-    var(--color-category-purple) 0%,
+    var(--color-category-accent) var(--hero-accent-stop, 0%),
     var(--color-header) 100%
   );
 }
 
+/* Each tab page recolours the header and accent, as on the reference; Gaming is the default */
+[data-theme="photography"] {
+  --color-header: #a91e00;
+  --color-category-accent: #ff5733;
+  --hero-accent-stop: 53.37%;
+}
+
+[data-theme="outdoor"] {
+  --color-header: #044704;
+  --color-category-accent: #228b22;
+  --hero-accent-stop: 50%;
+}
+
+[data-theme="entertainment"] {
+  --color-header: #8e0820;
+  --color-category-accent: #ff4465;
+  --hero-accent-stop: 50%;
+}
+
 body {
   background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+/* Tailwind v4 dropped the pointer cursor on buttons; the reference (v3) has it */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Every overlay's backdrop fades in rather than snapping on */
+dialog::backdrop {
+  animation: fade-in 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog,
+  dialog::backdrop {
+    animation: none;
+  }
+}
+
+/* A full-screen dialog (the chat) replaces the page, so the page behind must not scroll */
+html:has(dialog[data-fullscreen][open]) {
+  overflow: hidden;
+}
+
+/* Thin page scrollbar, as on the reference */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-neutral-250);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neutral-200);
+  border-radius: 8px;
 }

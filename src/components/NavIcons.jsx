@@ -1,5 +1,5 @@
 // Icon paths copied from the SharePal reference site so the glyphs match exactly.
-function icon(d) {
+const icon = (d) => {
   return function NavIcon({ className = '' }) {
     return (
       <svg
