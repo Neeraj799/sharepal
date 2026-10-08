@@ -4,3 +4,5 @@ dist-ssr
 *.local
 .env
 .playwright-mcp
+CLAUDE.md
+AGENTS.md
